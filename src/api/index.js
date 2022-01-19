@@ -1,31 +1,51 @@
 import axios from "axios";
 
+const URL = process.env.REACT_APP_API_URL;
+const WURL = process.env.REACT_APP_WEATHER_URL;
+export const getPlacesData = async (type, sw, ne) => {
+  const options = {
+    params: {
+      bl_latitude: sw.lat,
+      tr_latitude: ne.lat,
+      bl_longitude: sw.lng,
+      tr_longitude: ne.lng,
+    },
+    headers: {
+      "x-rapidapi-host": process.env.REACT_APP_API_HOST,
+      "x-rapidapi-key": process.env.REACT_APP_API_KEY,
+    },
+  };
+  try {
+    const {
+      data: { data },
+    } = await axios.get(`${URL}${type}/list-in-boundary`, options);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-const URL = process.env.REACT_APP_API_URL
-
-export  const getPlacesData = async(sw,ne)=>{
-    const options = {
- 
+export const getWeatherData = async (lat,lng) => {
+  
+  try {
+    if(lat && lng){
+  
+      const WOptions = {
         params: {
-          bl_latitude: sw.lat,
-          tr_latitude: ne.lat,
-          bl_longitude: sw.lng,
-          tr_longitude: ne.lng,
-        
+          lat:lat,
+          lon:lng,
         },
         headers: {
-          'x-rapidapi-host':process.env.REACT_APP_API_HOST ,
-          'x-rapidapi-key': process.env.REACT_APP_API_KEY
-        }
+          "x-rapidapi-host": process.env.REACT_APP_API_WEATHER_HOST,
+          "x-rapidapi-key": process.env.REACT_APP_API_WEATHER_KEY,
+        },
       };
-    try{
-        const {data:{data}} = await axios.get(URL,options)
-        return data ;
+      const { data } = await axios.get(WURL,WOptions);
+      console.log(data);
+      return data
     }
-    catch(error){
-        console.log(error);
-    }
-
-
-
-}
+    
+  } catch (error) {
+    console.log(error);
+  }
+};
